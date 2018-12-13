@@ -97,6 +97,20 @@ func TestNewXDG(t *testing.T) {
 			},
 		},
 		{
+			name: "runtime_dir",
+			env: map[string]string{
+				"XDG_RUNTIME_DIR": "/my/user/runtime",
+			},
+			want: &XDG{
+				ConfigHome: "/home/user/.config",
+				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
+				DataHome:   "/home/user/.local/share",
+				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
+				CacheHome:  "/home/user/.cache",
+				RuntimeDir: "/my/user/runtime",
+			},
+		},
+		{
 			name: "all",
 			env: map[string]string{
 				"XDG_CONFIG_HOME": "/my/user/config",

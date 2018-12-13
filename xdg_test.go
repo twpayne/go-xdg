@@ -207,7 +207,7 @@ func TestOpenDataFile(t *testing.T) {
 			wantName: "/usr/share/go-xdg.dat",
 		},
 		{
-			name:    "third_dir",
+			name:    "not_found",
 			root:    map[string]interface{}{},
 			wantErr: os.ErrNotExist,
 		},

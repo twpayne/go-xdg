@@ -1,4 +1,6 @@
-package xdg
+// Package xdgsettings checks, gets, and sets XDG settings. See
+// https://portland.freedesktop.org/doc/xdg-settings.html.
+package xdgsettings
 
 import (
 	"fmt"
@@ -16,14 +18,8 @@ const (
 	DefaultWebBrowserProperty = "default-web-browser"
 )
 
-type settings struct{}
-
-// Settings checks, gets, and sets XDG settings. See
-// https://portland.freedesktop.org/doc/xdg-settings.html.
-var Settings settings
-
 // Check checks that value of property.subProperty is value.
-func (settings) Check(property, subProperty, value string) (bool, error) {
+func Check(property, subProperty, value string) (bool, error) {
 	args := []string{"check", property}
 	if subProperty != "" {
 		args = append(args, subProperty)
@@ -45,7 +41,7 @@ func (settings) Check(property, subProperty, value string) (bool, error) {
 }
 
 // Get gets the value of property.subProperty.
-func (settings) Get(property, subProperty string) (string, error) {
+func Get(property, subProperty string) (string, error) {
 	args := []string{"get", property}
 	if subProperty != "" {
 		args = append(args, subProperty)
@@ -55,7 +51,7 @@ func (settings) Get(property, subProperty string) (string, error) {
 }
 
 // Set sets property.subProperty to value.
-func (settings) Set(property, subProperty, value string) error {
+func Set(property, subProperty, value string) error {
 	args := []string{"set", property}
 	if subProperty != "" {
 		args = append(args, subProperty)

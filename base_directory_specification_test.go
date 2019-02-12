@@ -8,16 +8,16 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
-func TestNewXDG(t *testing.T) {
+func TestNewBaseDirectorySpecification(t *testing.T) {
 	for _, tc := range []struct {
 		name string
 		env  map[string]string
-		want *XDG
+		want *BaseDirectorySpecification
 	}{
 		{
 			name: "default",
 			env:  nil,
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -31,7 +31,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_CONFIG_HOME": "/my/user/config",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/my/user/config",
 				ConfigDirs: []string{"/my/user/config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -45,7 +45,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_CONFIG_DIRS": "/config/dir/1:/config/dir/2",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/config/dir/1", "/config/dir/2"},
 				DataHome:   "/home/user/.local/share",
@@ -59,7 +59,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_DATA_HOME": "/my/user/data",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/my/user/data",
@@ -73,7 +73,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_DATA_DIRS": "/data/dir/1:/data/dir/2",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -87,7 +87,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_CACHE_HOME": "/my/user/cache",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -101,7 +101,7 @@ func TestNewXDG(t *testing.T) {
 			env: map[string]string{
 				"XDG_RUNTIME_DIR": "/my/user/runtime",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -120,7 +120,7 @@ func TestNewXDG(t *testing.T) {
 				"XDG_CACHE_HOME":  "/my/user/cache",
 				"XDG_RUNTIME_DIR": "/my/user/runtime",
 			},
-			want: &XDG{
+			want: &BaseDirectorySpecification{
 				ConfigHome: "/my/user/config",
 				ConfigDirs: []string{"/my/user/config", "/config/dir/1", "/config/dir/2"},
 				DataHome:   "/my/user/data",
@@ -131,11 +131,11 @@ func TestNewXDG(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			got := newXDG("/home/user", func(key string) string {
+			got := newBaseDirectorySpecification("/home/user", func(key string) string {
 				return tc.env[key]
 			})
 			if diff, equal := messagediff.PrettyDiff(tc.want, got); !equal {
-				t.Errorf("newXDG(...) == %+v, want %+v\n%s", got, tc.want, diff)
+				t.Errorf("newBaseDirectorySpecification(...) == %+v, want %+v\n%s", got, tc.want, diff)
 			}
 		})
 	}
@@ -171,7 +171,7 @@ func TestOpenConfigFile(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			xdg := newXDG("/home/user", func(key string) string {
+			xdg := newBaseDirectorySpecification("/home/user", func(key string) string {
 				return tc.env[key]
 			})
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
@@ -227,7 +227,7 @@ func TestOpenDataFile(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			xdg := newXDG("/home/user", func(key string) string {
+			xdg := newBaseDirectorySpecification("/home/user", func(key string) string {
 				return tc.env[key]
 			})
 			fs, cleanup, err := vfst.NewTestFS(tc.root)

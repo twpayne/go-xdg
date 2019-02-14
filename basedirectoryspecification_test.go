@@ -4,7 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -134,9 +135,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			got := newBaseDirectorySpecification("/home/user", func(key string) string {
 				return tc.env[key]
 			})
-			if diff, equal := messagediff.PrettyDiff(tc.want, got); !equal {
-				t.Errorf("newBaseDirectorySpecification(...) == %+v, want %+v\n%s", got, tc.want, diff)
-			}
+			assert.Equal(t, tc.want, got)
 		})
 	}
 }
@@ -176,13 +175,14 @@ func TestOpenConfigFile(t *testing.T) {
 			})
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(...) == %v, want <nil>", err)
-			}
+			require.NoError(t, err)
 			gotFile, gotName, gotErr := xdg.OpenConfigFile(fs.Open, "go-xdg.conf")
 			defer gotFile.Close()
-			if (gotFile == nil && tc.wantErr == nil) || gotName != tc.wantName || gotErr != tc.wantErr {
-				t.Errorf("xdg.OpenConfigFile(...) == %v, %q, %v, want !<nil>, %q, %v", gotFile, gotName, gotErr, tc.wantName, tc.wantErr)
+			if tc.wantErr == nil {
+				assert.NoError(t, gotErr)
+				assert.Equal(t, tc.wantName, gotName)
+			} else {
+				assert.Equal(t, tc.wantErr, gotErr)
 			}
 		})
 	}
@@ -232,13 +232,14 @@ func TestOpenDataFile(t *testing.T) {
 			})
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(...) == %v, want <nil>", err)
-			}
+			require.NoError(t, err)
 			gotFile, gotName, gotErr := xdg.OpenDataFile(fs.Open, "go-xdg.dat")
 			defer gotFile.Close()
-			if (gotFile == nil && tc.wantErr == nil) || gotName != tc.wantName || gotErr != tc.wantErr {
-				t.Errorf("xdg.OpenConfigFile(...) == %v, %q, %v, want !<nil>, %q, %v", gotFile, gotName, gotErr, tc.wantName, tc.wantErr)
+			if tc.wantErr == nil {
+				assert.NoError(t, gotErr)
+				assert.Equal(t, tc.wantName, gotName)
+			} else {
+				assert.Equal(t, tc.wantErr, gotErr)
 			}
 		})
 	}

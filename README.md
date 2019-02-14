@@ -4,8 +4,7 @@
 [![Build Status](https://travis-ci.org/twpayne/go-xdg.svg?branch=master)](https://travis-ci.org/twpayne/go-xdg)
 [![Report Card](https://goreportcard.com/badge/github.com/twpayne/go-xdg)](https://goreportcard.com/report/github.com/twpayne/go-xdg)
 
-Package `xdg` provides support for the [XDG Base Directory
-Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+Package `xdg` provides functions related to [freedesktop.org](https://freedesktop.org/).
 
 # License
 

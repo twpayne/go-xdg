@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	xdg "github.com/twpayne/go-xdg"
+	xdg "github.com/twpayne/go-xdg/v2"
 )
 
 func run() error {

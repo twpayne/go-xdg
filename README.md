@@ -6,6 +6,6 @@
 
 Package `xdg` provides functions related to [freedesktop.org](https://freedesktop.org/).
 
-# License
+## License
 
 MIT

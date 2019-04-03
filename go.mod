@@ -1,4 +1,4 @@
-module github.com/twpayne/go-xdg/v2
+module github.com/twpayne/go-xdg/v3
 
 go 1.12
 

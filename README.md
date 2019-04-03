@@ -1,4 +1,4 @@
-# `go-xdg`
+# go-xdg
 
 [![GoDoc](https://godoc.org/github.com/twpayne/go-xdg?status.svg)](https://godoc.org/github.com/twpayne/go-xdg)
 [![Build Status](https://travis-ci.org/twpayne/go-xdg.svg?branch=master)](https://travis-ci.org/twpayne/go-xdg)

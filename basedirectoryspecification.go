@@ -18,6 +18,12 @@ type BaseDirectorySpecification struct {
 	RuntimeDir string
 }
 
+// A getEnvFunc is a function that gets an environment variable, like os.Getenv.
+type getEnvFunc func(string) string
+
+// An OpenFunc is a function that opens a file, like os.Open.
+type OpenFunc func(string) (*os.File, error)
+
 // NewBaseDirectorySpecification returns a new BaseDirectorySpecification,
 // configured from the user's environment variables.
 func NewBaseDirectorySpecification() (*BaseDirectorySpecification, error) {
@@ -28,7 +34,7 @@ func NewBaseDirectorySpecification() (*BaseDirectorySpecification, error) {
 	return newBaseDirectorySpecification(homeDir, os.Getenv), nil
 }
 
-func newBaseDirectorySpecification(homeDir string, getenv func(string) string) *BaseDirectorySpecification {
+func newBaseDirectorySpecification(homeDir string, getenv getEnvFunc) *BaseDirectorySpecification {
 	defaultConfigHome := filepath.Join(homeDir, ".config")
 	configHome := firstNonEmpty(getenv("XDG_CONFIG_HOME"), defaultConfigHome)
 
@@ -64,7 +70,7 @@ func newBaseDirectorySpecification(homeDir string, getenv func(string) string) *
 // os.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenConfigFile(open func(string) (*os.File, error), nameComponents ...string) (*os.File, string, error) {
+func (b *BaseDirectorySpecification) OpenConfigFile(open OpenFunc, nameComponents ...string) (*os.File, string, error) {
 	return openFile(open, nameComponents, b.ConfigDirs)
 }
 
@@ -73,7 +79,7 @@ func (b *BaseDirectorySpecification) OpenConfigFile(open func(string) (*os.File,
 // os.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenDataFile(open func(string) (*os.File, error), nameComponents ...string) (*os.File, string, error) {
+func (b *BaseDirectorySpecification) OpenDataFile(open OpenFunc, nameComponents ...string) (*os.File, string, error) {
 	return openFile(open, nameComponents, b.DataDirs)
 }
 
@@ -86,7 +92,7 @@ func firstNonEmpty(ss ...string) string {
 	return ""
 }
 
-func openFile(open func(string) (*os.File, error), nameComponents, dirs []string) (*os.File, string, error) {
+func openFile(open OpenFunc, nameComponents, dirs []string) (*os.File, string, error) {
 	if open == nil {
 		open = os.Open
 	}

@@ -8,6 +8,12 @@ import (
 
 const (
 	settingsCmdName = "xdg-settings"
+
+	// DefaultURLSchemeHandlerProperty is the default URL scheme handler property.
+	DefaultURLSchemeHandlerProperty = "default-url-scheme-handler"
+
+	// DefaultWebBrowserProperty is the default web browser property.
+	DefaultWebBrowserProperty = "default-web-browser"
 )
 
 // A Setting is a setting.
@@ -15,14 +21,6 @@ type Setting struct {
 	Property    string
 	SubProperty string
 }
-
-var (
-	// DefaultURLSchemeHandlerProperty is the default URL scheme handler property.
-	DefaultURLSchemeHandlerProperty = "default-url-scheme-handler"
-
-	// DefaultWebBrowserProperty is the default web browser property.
-	DefaultWebBrowserProperty = "default-web-browser"
-)
 
 // Check checks that value of s is value. See
 // https://portland.freedesktop.org/doc/xdg-settings.html.

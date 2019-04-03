@@ -8,7 +8,15 @@ import (
 
 const (
 	settingsCmdName = "xdg-settings"
+)
 
+// A Setting is a setting.
+type Setting struct {
+	Property    string
+	SubProperty string
+}
+
+var (
 	// DefaultURLSchemeHandlerProperty is the default URL scheme handler property.
 	DefaultURLSchemeHandlerProperty = "default-url-scheme-handler"
 
@@ -16,45 +24,45 @@ const (
 	DefaultWebBrowserProperty = "default-web-browser"
 )
 
-// CheckSetting checks that value of property.subProperty is value. See
+// Check checks that value of s is value. See
 // https://portland.freedesktop.org/doc/xdg-settings.html.
-func CheckSetting(property, subProperty, value string) (bool, error) {
-	args := []string{"check", property}
-	if subProperty != "" {
-		args = append(args, subProperty)
+func (s Setting) Check(value string) (bool, error) {
+	args := []string{"check", s.Property}
+	if s.SubProperty != "" {
+		args = append(args, s.SubProperty)
 	}
 	args = append(args, value)
 	output, err := exec.Command(settingsCmdName, args...).Output()
 	if err != nil {
 		return false, err
 	}
-	s := strings.TrimSpace(string(output))
-	switch s {
+	o := strings.TrimSpace(string(output))
+	switch o {
 	case "yes":
 		return true, nil
 	case "no":
 		return false, nil
 	default:
-		return false, fmt.Errorf(`CheckSetting(%q, %q, %q): expected "yes" or "no", got %q`, property, subProperty, value, s)
+		return false, fmt.Errorf(`%s %s: expected "yes" or "no", got %q`, settingsCmdName, strings.Join(args, " "), o)
 	}
 }
 
-// SetSetting sets property.subProperty to value.
-func SetSetting(property, subProperty, value string) error {
-	args := []string{"set", property}
-	if subProperty != "" {
-		args = append(args, subProperty)
-	}
-	args = append(args, value)
-	return exec.Command(settingsCmdName, args...).Run()
-}
-
-// Setting gets the value of property.subProperty.
-func Setting(property, subProperty string) (string, error) {
-	args := []string{"get", property}
-	if subProperty != "" {
-		args = append(args, subProperty)
+// Get gets the value of s.
+func (s Setting) Get() (string, error) {
+	args := []string{"get", s.Property}
+	if s.SubProperty != "" {
+		args = append(args, s.SubProperty)
 	}
 	output, err := exec.Command(settingsCmdName, args...).Output()
 	return strings.TrimSpace(string(output)), err
+}
+
+// Set sets s to value.
+func (s Setting) Set(value string) error {
+	args := []string{"set", s.Property}
+	if s.SubProperty != "" {
+		args = append(args, s.SubProperty)
+	}
+	args = append(args, value)
+	return exec.Command(settingsCmdName, args...).Run()
 }

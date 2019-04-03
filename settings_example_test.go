@@ -3,7 +3,7 @@ package xdg_test
 import (
 	"fmt"
 
-	xdg "github.com/twpayne/go-xdg/v2"
+	xdg "github.com/twpayne/go-xdg/v3"
 )
 
 func ExampleSetting_Check() {

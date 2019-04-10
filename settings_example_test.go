@@ -15,8 +15,8 @@ func ExampleSetting_Check() {
 		panic(err)
 	}
 	fmt.Println(isGoogleChrome)
-
 }
+
 func ExampleSetting_Get() {
 	setting := xdg.Setting{
 		Property:    xdg.DefaultURLSchemeHandlerProperty,

@@ -18,8 +18,8 @@ type BaseDirectorySpecification struct {
 	RuntimeDir string
 }
 
-// A getEnvFunc is a function that gets an environment variable, like os.Getenv.
-type getEnvFunc func(string) string
+// A GetenvFunc is a function that gets an environment variable, like os.Getenv.
+type GetenvFunc func(string) string
 
 // An OpenFunc is a function that opens a file, like os.Open.
 type OpenFunc func(string) (*os.File, error)
@@ -31,10 +31,19 @@ func NewBaseDirectorySpecification() (*BaseDirectorySpecification, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newBaseDirectorySpecification(homeDir, os.Getenv), nil
+	return NewTestBaseDirectorySpecification(homeDir, os.Getenv), nil
 }
 
-func newBaseDirectorySpecification(homeDir string, getenv getEnvFunc) *BaseDirectorySpecification {
+// NewTestBaseDirectorySpecification returns a new BaseDirectorySpecification
+// using homeDir and the getenv function. getenv can be nil, in which case
+// default values are returned.
+func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseDirectorySpecification {
+	if getenv == nil {
+		getenv = func(string) string {
+			return ""
+		}
+	}
+
 	defaultConfigHome := filepath.Join(homeDir, ".config")
 	configHome := firstNonEmpty(getenv("XDG_CONFIG_HOME"), defaultConfigHome)
 

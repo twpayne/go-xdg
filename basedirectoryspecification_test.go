@@ -171,7 +171,11 @@ func TestOpenConfigFile(t *testing.T) {
 			defer cleanup()
 			require.NoError(t, err)
 			gotFile, gotName, gotErr := xdg.OpenConfigFile(fs.Open, "go-xdg.conf")
-			defer gotFile.Close()
+			if gotErr == nil {
+				defer func() {
+					assert.NoError(t, gotFile.Close())
+				}()
+			}
 			if tc.wantErr == nil {
 				assert.NoError(t, gotErr)
 				assert.Equal(t, tc.wantName, gotName)
@@ -225,7 +229,11 @@ func TestOpenDataFile(t *testing.T) {
 			defer cleanup()
 			require.NoError(t, err)
 			gotFile, gotName, gotErr := xdg.OpenDataFile(fs.Open, "go-xdg.dat")
-			defer gotFile.Close()
+			if gotErr == nil {
+				defer func() {
+					assert.NoError(t, gotFile.Close())
+				}()
+			}
 			if tc.wantErr == nil {
 				assert.NoError(t, gotErr)
 				assert.Equal(t, tc.wantName, gotName)

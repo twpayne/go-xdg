@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/vfst"
+	"github.com/twpayne/go-vfs/v2/vfst"
 )
 
 func TestNewBaseDirectorySpecification(t *testing.T) {

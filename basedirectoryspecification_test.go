@@ -1,12 +1,12 @@
 package xdg
 
 import (
-	"os"
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3/vfst"
 )
 
 func TestNewBaseDirectorySpecification(t *testing.T) {
@@ -162,7 +162,7 @@ func TestOpenConfigFile(t *testing.T) {
 		{
 			name:        "not_found",
 			root:        map[string]interface{}{},
-			expectedErr: os.ErrNotExist,
+			expectedErr: fs.ErrNotExist,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -220,7 +220,7 @@ func TestOpenDataFile(t *testing.T) {
 		{
 			name:        "not_found",
 			root:        map[string]interface{}{},
-			expectedErr: os.ErrNotExist,
+			expectedErr: fs.ErrNotExist,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

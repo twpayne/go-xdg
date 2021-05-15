@@ -1,6 +1,8 @@
 package xdg
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,8 +23,8 @@ type BaseDirectorySpecification struct {
 // A GetenvFunc is a function that gets an environment variable, like os.Getenv.
 type GetenvFunc func(string) string
 
-// An OpenFunc is a function that opens a file, like os.Open.
-type OpenFunc func(string) (*os.File, error)
+// An OpenFunc is a function that opens a file, like io/fs.FS.Open.
+type OpenFunc func(string) (fs.File, error)
 
 // NewBaseDirectorySpecification returns a new BaseDirectorySpecification,
 // configured from the user's environment variables.
@@ -76,19 +78,19 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 
 // OpenConfigFile opens the first configuration file with the given name found,
 // its full path, and any error. If no file can be found, the error will be
-// os.ErrNotExist.
+// fs.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenConfigFile(open OpenFunc, nameComponents ...string) (*os.File, string, error) {
+func (b *BaseDirectorySpecification) OpenConfigFile(open OpenFunc, nameComponents ...string) (fs.File, string, error) {
 	return openFile(open, nameComponents, b.ConfigDirs)
 }
 
 // OpenDataFile opens the first data file with the given name found, its full
 // path, and any error. If no file can be found, the error will be
-// os.ErrNotExist.
+// fs.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenDataFile(open OpenFunc, nameComponents ...string) (*os.File, string, error) {
+func (b *BaseDirectorySpecification) OpenDataFile(open OpenFunc, nameComponents ...string) (fs.File, string, error) {
 	return openFile(open, nameComponents, b.DataDirs)
 }
 
@@ -101,9 +103,11 @@ func firstNonEmpty(ss ...string) string {
 	return ""
 }
 
-func openFile(open OpenFunc, nameComponents, dirs []string) (*os.File, string, error) {
+func openFile(open OpenFunc, nameComponents, dirs []string) (fs.File, string, error) {
 	if open == nil {
-		open = os.Open
+		open = func(name string) (fs.File, error) {
+			return os.Open(name)
+		}
 	}
 	for _, dir := range dirs {
 		path := filepath.Join(append([]string{dir}, nameComponents...)...)
@@ -111,11 +115,11 @@ func openFile(open OpenFunc, nameComponents, dirs []string) (*os.File, string, e
 		switch {
 		case err == nil:
 			return f, path, nil
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			continue
 		default:
 			return nil, path, err
 		}
 	}
-	return nil, "", os.ErrNotExist
+	return nil, "", fs.ErrNotExist
 }

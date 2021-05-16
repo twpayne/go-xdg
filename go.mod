@@ -1,4 +1,4 @@
-module github.com/twpayne/go-xdg/v5
+module github.com/twpayne/go-xdg/v6
 
 go 1.16
 

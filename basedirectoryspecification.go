@@ -23,9 +23,6 @@ type BaseDirectorySpecification struct {
 // A GetenvFunc is a function that gets an environment variable, like os.Getenv.
 type GetenvFunc func(string) string
 
-// An OpenFunc is a function that opens a file, like io/fs.FS.Open.
-type OpenFunc func(string) (fs.File, error)
-
 // NewBaseDirectorySpecification returns a new BaseDirectorySpecification,
 // configured from the user's environment variables.
 func NewBaseDirectorySpecification() (*BaseDirectorySpecification, error) {
@@ -81,8 +78,8 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 // fs.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenConfigFile(open OpenFunc, nameComponents ...string) (fs.File, string, error) {
-	return openFile(open, nameComponents, b.ConfigDirs)
+func (b *BaseDirectorySpecification) OpenConfigFile(fsys fs.FS, nameComponents ...string) (fs.File, string, error) {
+	return openFile(fsys, nameComponents, b.ConfigDirs)
 }
 
 // OpenDataFile opens the first data file with the given name found, its full
@@ -90,8 +87,8 @@ func (b *BaseDirectorySpecification) OpenConfigFile(open OpenFunc, nameComponent
 // fs.ErrNotExist.
 //
 // The file is opened with the open argument. If open is nil, os.Open is used.
-func (b *BaseDirectorySpecification) OpenDataFile(open OpenFunc, nameComponents ...string) (fs.File, string, error) {
-	return openFile(open, nameComponents, b.DataDirs)
+func (b *BaseDirectorySpecification) OpenDataFile(fsys fs.FS, nameComponents ...string) (fs.File, string, error) {
+	return openFile(fsys, nameComponents, b.DataDirs)
 }
 
 func firstNonEmpty(ss ...string) string {
@@ -103,15 +100,10 @@ func firstNonEmpty(ss ...string) string {
 	return ""
 }
 
-func openFile(open OpenFunc, nameComponents, dirs []string) (fs.File, string, error) {
-	if open == nil {
-		open = func(name string) (fs.File, error) {
-			return os.Open(name)
-		}
-	}
+func openFile(fsys fs.FS, nameComponents, dirs []string) (fs.File, string, error) {
 	for _, dir := range dirs {
 		path := filepath.Join(append([]string{dir}, nameComponents...)...)
-		f, err := open(path)
+		f, err := fsys.Open(path)
 		switch {
 		case err == nil:
 			return f, path, nil

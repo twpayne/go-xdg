@@ -167,10 +167,10 @@ func TestOpenConfigFile(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			xdg := NewTestBaseDirectorySpecification("/home/user", nil)
-			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			require.NoError(t, err)
-			actualFile, actualName, err := xdg.OpenConfigFile(fs.Open, "go-xdg.conf")
+			actualFile, actualName, err := xdg.OpenConfigFile(fileSystem, "go-xdg.conf")
 			if err == nil {
 				defer func() {
 					assert.NoError(t, actualFile.Close())
@@ -225,10 +225,10 @@ func TestOpenDataFile(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			xdg := NewTestBaseDirectorySpecification("/home/user", nil)
-			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			require.NoError(t, err)
-			actualFile, actualName, err := xdg.OpenDataFile(fs.Open, "go-xdg.dat")
+			actualFile, actualName, err := xdg.OpenDataFile(fileSystem, "go-xdg.dat")
 			if err == nil {
 				defer func() {
 					assert.NoError(t, actualFile.Close())

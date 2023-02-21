@@ -24,6 +24,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -38,6 +39,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -52,6 +54,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -66,6 +69,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/my/user/data", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -80,6 +84,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/data/dir/1", "/data/dir/2"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -94,6 +99,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/my/user/cache",
 				RuntimeDir: "",
+				StateHome:  "/home/user/.local/state",
 			},
 		},
 		{
@@ -108,6 +114,22 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
 				CacheHome:  "/home/user/.cache",
 				RuntimeDir: "/my/user/runtime",
+				StateHome:  "/home/user/.local/state",
+			},
+		},
+		{
+			name: "state_dir",
+			getenv: makeGetenvFunc(map[string]string{
+				"XDG_STATE_HOME": "/my/user/state",
+			}),
+			expected: &BaseDirectorySpecification{
+				ConfigHome: "/home/user/.config",
+				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
+				DataHome:   "/home/user/.local/share",
+				DataDirs:   []string{"/home/user/.local/share", "/usr/local/share", "/usr/share"},
+				CacheHome:  "/home/user/.cache",
+				RuntimeDir: "",
+				StateHome:  "/my/user/state",
 			},
 		},
 		{
@@ -119,6 +141,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				"XDG_DATA_DIRS":   "/data/dir/1:/data/dir/2",
 				"XDG_CACHE_HOME":  "/my/user/cache",
 				"XDG_RUNTIME_DIR": "/my/user/runtime",
+				"XDG_STATE_HOME":  "/my/user/state",
 			}),
 			expected: &BaseDirectorySpecification{
 				ConfigHome: "/my/user/config",
@@ -127,6 +150,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				DataDirs:   []string{"/my/user/data", "/data/dir/1", "/data/dir/2"},
 				CacheHome:  "/my/user/cache",
 				RuntimeDir: "/my/user/runtime",
+				StateHome:  "/my/user/state",
 			},
 		},
 	} {

@@ -8,7 +8,8 @@ import (
 
 func ExampleSetting_Check() {
 	setting := xdg.Setting{
-		Property: xdg.DefaultWebBrowserProperty,
+		Property:    xdg.DefaultWebBrowserProperty,
+		SubProperty: "",
 	}
 	isGoogleChrome, err := setting.Check("google-chrome.desktop")
 	if err != nil {

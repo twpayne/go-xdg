@@ -48,7 +48,10 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 	configHome := firstNonEmpty(getenv("XDG_CONFIG_HOME"), defaultConfigHome)
 
 	defaultConfigDirs := filepath.Join("/", "etc", "xdg")
-	configDirs := append([]string{configHome}, filepath.SplitList(firstNonEmpty(getenv("XDG_CONFIG_DIRS"), defaultConfigDirs))...)
+	configDirs := append(
+		[]string{configHome},
+		filepath.SplitList(firstNonEmpty(getenv("XDG_CONFIG_DIRS"), defaultConfigDirs))...,
+	)
 
 	defaultDataHome := filepath.Join(homeDir, ".local", "share")
 	dataHome := firstNonEmpty(getenv("XDG_DATA_HOME"), defaultDataHome)

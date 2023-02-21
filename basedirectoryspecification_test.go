@@ -1,4 +1,4 @@
-package xdg
+package xdg_test
 
 import (
 	"io/fs"
@@ -7,17 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4/vfst"
+
+	xdg "github.com/twpayne/go-xdg/v6"
 )
 
 func TestNewBaseDirectorySpecification(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
-		getenv   GetenvFunc
-		expected *BaseDirectorySpecification
+		getenv   xdg.GetenvFunc
+		expected *xdg.BaseDirectorySpecification
 	}{
 		{
 			name: "default",
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -32,7 +34,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_CONFIG_HOME": "/my/user/config",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/my/user/config",
 				ConfigDirs: []string{"/my/user/config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -47,7 +49,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_CONFIG_DIRS": "/config/dir/1:/config/dir/2",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/config/dir/1", "/config/dir/2"},
 				DataHome:   "/home/user/.local/share",
@@ -62,7 +64,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_DATA_HOME": "/my/user/data",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/my/user/data",
@@ -77,7 +79,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_DATA_DIRS": "/data/dir/1:/data/dir/2",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -92,7 +94,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_CACHE_HOME": "/my/user/cache",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -107,7 +109,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_RUNTIME_DIR": "/my/user/runtime",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -122,7 +124,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 			getenv: makeGetenvFunc(map[string]string{
 				"XDG_STATE_HOME": "/my/user/state",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/home/user/.config",
 				ConfigDirs: []string{"/home/user/.config", "/etc/xdg"},
 				DataHome:   "/home/user/.local/share",
@@ -143,7 +145,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 				"XDG_RUNTIME_DIR": "/my/user/runtime",
 				"XDG_STATE_HOME":  "/my/user/state",
 			}),
-			expected: &BaseDirectorySpecification{
+			expected: &xdg.BaseDirectorySpecification{
 				ConfigHome: "/my/user/config",
 				ConfigDirs: []string{"/my/user/config", "/config/dir/1", "/config/dir/2"},
 				DataHome:   "/my/user/data",
@@ -155,7 +157,7 @@ func TestNewBaseDirectorySpecification(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			actual := NewTestBaseDirectorySpecification("/home/user", tc.getenv)
+			actual := xdg.NewTestBaseDirectorySpecification("/home/user", tc.getenv)
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
@@ -190,7 +192,7 @@ func TestOpenConfigFile(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			xdg := NewTestBaseDirectorySpecification("/home/user", nil)
+			xdg := xdg.NewTestBaseDirectorySpecification("/home/user", nil)
 			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			require.NoError(t, err)
@@ -248,7 +250,7 @@ func TestOpenDataFile(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			xdg := NewTestBaseDirectorySpecification("/home/user", nil)
+			xdg := xdg.NewTestBaseDirectorySpecification("/home/user", nil)
 			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			require.NoError(t, err)
@@ -268,7 +270,7 @@ func TestOpenDataFile(t *testing.T) {
 	}
 }
 
-func makeGetenvFunc(env map[string]string) GetenvFunc {
+func makeGetenvFunc(env map[string]string) xdg.GetenvFunc {
 	return func(key string) string {
 		return env[key]
 	}

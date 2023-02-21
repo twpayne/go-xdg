@@ -18,6 +18,7 @@ type BaseDirectorySpecification struct {
 	DataDirs   []string
 	CacheHome  string
 	RuntimeDir string
+	StateHome  string
 }
 
 // A GetenvFunc is a function that gets an environment variable, like os.Getenv.
@@ -63,6 +64,9 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 
 	runtimeDir := getenv("XDG_RUNTIME_DIR")
 
+	defaultStateHome := filepath.Join(homeDir, ".local", "state")
+	stateHome := firstNonEmpty(getenv("XDG_STATE_HOME"), defaultStateHome)
+
 	return &BaseDirectorySpecification{
 		ConfigHome: configHome,
 		ConfigDirs: configDirs,
@@ -70,6 +74,7 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 		DataDirs:   dataDirs,
 		CacheHome:  cacheHome,
 		RuntimeDir: runtimeDir,
+		StateHome:  stateHome,
 	}
 }
 

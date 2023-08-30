@@ -4,8 +4,7 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
 	xdg "github.com/twpayne/go-xdg/v6"
@@ -195,7 +194,7 @@ func TestOpenConfigFile(t *testing.T) {
 			xdg := xdg.NewTestBaseDirectorySpecification("/home/user", nil)
 			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			actualFile, actualName, err := xdg.OpenConfigFile(fileSystem, "go-xdg.conf")
 			if err == nil {
 				defer func() {
@@ -253,7 +252,7 @@ func TestOpenDataFile(t *testing.T) {
 			xdg := xdg.NewTestBaseDirectorySpecification("/home/user", nil)
 			fileSystem, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			actualFile, actualName, err := xdg.OpenDataFile(fileSystem, "go-xdg.dat")
 			if err == nil {
 				defer func() {

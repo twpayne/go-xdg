@@ -84,8 +84,6 @@ func NewTestBaseDirectorySpecification(homeDir string, getenv GetenvFunc) *BaseD
 // OpenConfigFile opens the first configuration file with the given name found,
 // its full path, and any error. If no file can be found, the error will be
 // fs.ErrNotExist.
-//
-// The file is opened with the open argument. If open is nil, os.Open is used.
 func (b *BaseDirectorySpecification) OpenConfigFile(fsys fs.FS, nameComponents ...string) (fs.File, string, error) {
 	return openFile(fsys, nameComponents, b.ConfigDirs)
 }
@@ -93,8 +91,6 @@ func (b *BaseDirectorySpecification) OpenConfigFile(fsys fs.FS, nameComponents .
 // OpenDataFile opens the first data file with the given name found, its full
 // path, and any error. If no file can be found, the error will be
 // fs.ErrNotExist.
-//
-// The file is opened with the open argument. If open is nil, os.Open is used.
 func (b *BaseDirectorySpecification) OpenDataFile(fsys fs.FS, nameComponents ...string) (fs.File, string, error) {
 	return openFile(fsys, nameComponents, b.DataDirs)
 }

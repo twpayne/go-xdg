@@ -1,3 +1,6 @@
+run:
+  go: '1.21'
+
 linters:
   enable:
   - asasalint
@@ -7,7 +10,6 @@ linters:
   - containedctx
   - contextcheck
   - decorder
-  - depguard
   - dogsled
   - dupl
   - dupword
@@ -18,14 +20,15 @@ linters:
   - errorlint
   - execinquery
   - exhaustive
-  - exhaustruct
   - exportloopref
   - forbidigo
   - forcetypeassert
   - gci
+  - ginkgolinter
   - gocheckcompilerdirectives
   - gochecknoglobals
   - gochecknoinits
+  - gochecksumtype
   - gocognit
   - goconst
   - gocritic
@@ -43,9 +46,11 @@ linters:
   - goprintffuncname
   - gosec
   - gosimple
+  - gosmopolitan
   - govet
   - grouper
   - importas
+  - inamedparam
   - ineffassign
   - interfacebloat
   - ireturn
@@ -53,6 +58,7 @@ linters:
   - loggercheck
   - maintidx
   - makezero
+  - mirror
   - misspell
   - musttag
   - nakedret
@@ -63,16 +69,23 @@ linters:
   - nolintlint
   - nonamedreturns
   - nosprintfhostport
+  - perfsprint
   - prealloc
   - predeclared
   - promlinter
+  - protogetter
   - reassign
   - revive
+  - rowserrcheck
+  - sloglint
+  - spancheck
   - sqlclosecheck
   - staticcheck
   - stylecheck
+  - tagalign
   - tagliatelle
   - tenv
+  - testifylint
   - testpackage
   - thelper
   - typecheck
@@ -80,18 +93,22 @@ linters:
   - unparam
   - unused
   - usestdlibvars
+  - wastedassign
   - whitespace
+  - zerologlint
   disable:
+  - copyloopvar
   - cyclop
+  - depguard
   - exhaustivestruct
+  - exhaustruct
   - funlen
+  - intrange
   - nlreturn
   - paralleltest
-  - rowserrcheck # https://github.com/golangci/golangci-lint/issues/2649
   - testableexamples
   - tparallel
   - varnamelen
-  - wastedassign # https://github.com/golangci/golangci-lint/issues/2649
   - wrapcheck
   - wsl
 
@@ -103,7 +120,6 @@ linters-settings:
     - prefix(github.com/twpayne/go-xdg)
   gofumpt:
     extra-rules: true
-    go-version: '1.20'
     module-path: github.com/twpayne/go-xdg
   goimports:
     local-prefixes: github.com/twpayne/go-xdg

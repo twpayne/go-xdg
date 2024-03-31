@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/twpayne/go-vfs/v4/vfst"
+	"github.com/twpayne/go-vfs/v5/vfst"
 
 	xdg "github.com/twpayne/go-xdg/v6"
 )
